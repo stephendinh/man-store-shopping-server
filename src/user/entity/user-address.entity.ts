@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   Column,
   Entity,
@@ -5,6 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { UserDto } from '../dto/user.dto';
 import { UserEntity } from './user.entity';
 
 @Entity('user_address')
@@ -14,7 +16,8 @@ export class UserAddressEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.id)
   @JoinColumn({ name: 'user_id' })
-  user: UserEntity;
+  @Transform(({ value }) => ({ id: value.id, name: value.email }))
+  user: UserDto;
 
   @Column({ unique: true })
   address_line: string;
@@ -22,7 +25,9 @@ export class UserAddressEntity {
   @Column()
   city: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   state: string;
 
   @Column()
@@ -34,7 +39,7 @@ export class UserAddressEntity {
   @Column()
   zip_code: number;
 
-  @Column()
+  @Column({ default: 0 })
   isDefault: number;
 
   @Column({ nullable: true })

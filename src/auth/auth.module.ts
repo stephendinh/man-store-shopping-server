@@ -19,7 +19,7 @@ import { MailerModule } from 'src/mailer/mailer.module';
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: {
-        expiresIn: process.env.JWT_EXPIRES || 1800,
+        expiresIn: process.env.JWT_EXPIRES || 86400,
       },
     }),
   ],

@@ -1,7 +1,5 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
+import { Body, Controller, Post } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { UserDto } from 'src/user/dto/user.dto';
 import { AuthService } from './auth.service';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { LoginDto } from './dto/login.dto';
