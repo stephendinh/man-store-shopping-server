@@ -18,13 +18,11 @@ export class CategoryController {
 
   @Delete(':id')
   async deleteCategory(@Param('id') id: number) {
-    console.log('id', id);
     return this.categoryService.deleteCategory(id);
   }
 
   @Get()
   async findAllCategory() {
-    console.log('runhere');
     return this.categoryService.findAll();
   }
 }
