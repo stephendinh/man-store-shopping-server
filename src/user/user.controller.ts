@@ -25,8 +25,8 @@ export class UserController {
     return this.userService.getAllUsers(queryDto);
   }
 
-  @Roles(Role.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(Role.ADMIN)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   async viewUserDetail(@Param('id') id: string): Promise<any> {
     return this.userService.findOne({ id });

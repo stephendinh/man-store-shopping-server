@@ -1,11 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { AppDataSource1, configService } from 'src/config/config.service';
+import { AppDataSource } from 'src/data-source';
 import { BaseHttpException } from 'src/shared/base-http-exception';
 import { ErrorStatusEnums } from 'src/types/errors/errors.enum';
-import { Repository } from 'typeorm';
-import { CreateCategoryDto } from './dto/create-category.dto';
+import { UserEntity } from 'src/user/entity/user.entity';
+import {
+  EntityManager,
+  getConnection,
+  getManager,
+  Repository,
+  Connection,
+} from 'typeorm';
 import { CreateSubCategoryDto } from './dto/create-subCategory.dto';
-import { CategoryEntity } from './entity/category.enity';
+import { CategoryVariationEntity } from './entity/category-variation.entity';
+import { CategoryEntity } from './entity/category.entity';
 import { SubCategory } from './entity/sub-category.entity';
 
 @Injectable()
@@ -15,19 +24,59 @@ export class CategoryService {
     private readonly categoryRepo: Repository<CategoryEntity>,
     @InjectRepository(SubCategory)
     private readonly subCategoryRepo: Repository<SubCategory>,
+    @InjectRepository(CategoryVariationEntity)
+    private readonly categoryVariationRepo: Repository<CategoryVariationEntity>,
+    @InjectEntityManager()
+    private readonly entityManager: EntityManager,
+    private connection: Connection,
   ) {}
   async findOneCategory(options: object): Promise<CategoryEntity> {
     const rs = await this.categoryRepo.findOne({ where: options });
     return rs;
   }
-
   async findOneSubCategory(options: object): Promise<CategoryEntity> {
     const rs = await this.subCategoryRepo.findOne({ where: options });
     return rs;
   }
+  async createCategoryVariation(category_id: number, variations: any) {
+    const categoryVariations = variations.map((variation_id: number) => {
+      return {
+        categoryId: category_id,
+        variationId: variation_id,
+      };
+    });
+    const categoryVariationsEntity =
+      this.categoryVariationRepo.create(categoryVariations);
 
-  async createCategory(createCategory: CreateCategoryDto): Promise<any> {
-    const { name } = createCategory;
+    if (categoryVariations.length) {
+      // const rs = await this.categoryVariationRepo
+      //   .createQueryBuilder()
+      //   .insert()
+      //   .into(CategoryVariationEntity)
+      //   .values([{ categoryId: category_id, variationId: 3 }])
+      //   .execute();
+      for (let i = 0; i < categoryVariations.length; i++) {
+        await this.categoryVariationRepo.save(categoryVariationsEntity[i]);
+      }
+    }
+    // console.log('categoryVariations', categoryVariations);
+    // const rs = await this.categoryVariationRepo
+    //   .createQueryBuilder()
+    //   .insert()
+    //   .values(categoryVariations)
+    //   .execute();
+    // const rs = await this.categoryVariationRepo.save({
+    //   categoryId: 10,
+    //   variationId: 1,
+    // });
+    // return rs;
+  }
+
+  async createCategory(createCategory: any): Promise<any> {
+    const { name, listVariationId } = createCategory;
+    const categoryInstance = this.categoryRepo.create({
+      name,
+    });
     const category = await this.findOneCategory({ name });
     if (category) {
       throw BaseHttpException.generateError(
@@ -35,9 +84,49 @@ export class CategoryService {
         `category with name: ${name} is exist`,
       );
     }
-    const newCategory = this.categoryRepo.create({ name });
-    return await this.categoryRepo.save(newCategory);
+    const listVariation = await this.categoryVariationRepo.find();
+    console.log('listVariation', listVariation);
+    // const queryRunner = AppDataSource1.createQueryRunner();
+    // await queryRunner.connect();
+    // // lets now open a new transaction:
+    // await queryRunner.startTransaction();
+    // try {
+    //   // execute some operations on this transaction:
+    //   const savedCategory = await queryRunner.manager.save(categoryInstance);
+    //   // commit transaction now:
+    //   console.log('savedCategory', savedCategory);
+    //   const categoryVariation = await this.createCategoryVariation(
+    //     savedCategory.id,
+    //     listVariationId,
+    //   );
+    //   console.log('categoryVariation', categoryVariation);
+    //   await queryRunner.commitTransaction();
+    // } catch (err) {
+    //   console.log('err', err);
+    //   // since we have errors let's rollback changes we made
+    //   await queryRunner.rollbackTransaction();
+    //   throw BaseHttpException.generateError();
+    // } finally {
+    //   // you need to release query runner which is manually created:
+    //   await queryRunner.release();
+    // }
   }
+
+  // async createCategory(createCategory: any): Promise<any> {
+  //   const { name, listVariationId } = createCategory;
+  //     const category = await this.findOneCategory({ name });
+  //     if (category) {
+  //       throw BaseHttpException.generateError(
+  //         ErrorStatusEnums.BAD_REQUEST,
+  //         `category with name: ${name} is exist`,
+  //       );
+  //     }
+  //     const newCategory = this.categoryRepo.create({ name });
+  //   await this.entityManager.transaction(async (transactionalManager: EntityManager) => {
+  //     const rs = await transactionalManager.save(newCategory)
+  //     await transactionalManager.save(users)
+  //   }
+  // }
 
   async deleteCategory(id: number) {
     const category = await this.findOneCategory({ id });

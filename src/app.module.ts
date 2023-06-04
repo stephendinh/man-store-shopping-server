@@ -11,6 +11,10 @@ import { VariationModule } from './variation/variation.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { MailerModule } from './mailer/mailer.module';
+import { SocketModule } from './socket/socket.module';
+import { ProductItemModule } from './product-item/product-item.module';
+import { OrderModule } from './order/order.module';
+import { PhotoModule } from './photo/photo.module';
 
 @Module({
   imports: [
@@ -25,6 +29,10 @@ import { MailerModule } from './mailer/mailer.module';
     UserModule,
     AuthModule,
     MailerModule,
+    SocketModule,
+    ProductItemModule,
+    OrderModule,
+    PhotoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -6,9 +6,27 @@ import { ErrorStatusEnums } from 'src/types/errors/errors.enum';
 import { Repository } from 'typeorm';
 import { CreateVariationOptionDto } from './dto/create-variation-option.dto';
 import { CreateVariationDto } from './dto/create-variation.dto';
-import { VariationOptionEntity } from './enity/variation-option.entity';
-import { VariationEntity } from './enity/variation.entity';
+import { VariationOptionEntity } from './entity/variation-option.entity';
+import { VariationEntity } from './entity/variation.entity';
 
+/**
+ * API: create category
+ * @Params: name, [variationId_1, variationId_2 ]
+ * Method: post
+ */
+/**
+ * API: get Variation By Category
+ * @Params: variation_id
+ * Method: get
+ * response: [
+ *  {name: 'color', values: [variation_options_1, variation_options_2] }
+ * ]
+ */
+/**create product
+ * API:
+ * @Params: name, categoryId
+ * Method: post
+ */
 @Injectable()
 export class VariationService {
   constructor(
@@ -31,16 +49,7 @@ export class VariationService {
   async createVariation(
     createVariation: CreateVariationDto,
   ): Promise<VariationEntity> {
-    const { category_id, name } = createVariation;
-    const category = await this.categoryService.findOneCategory({
-      id: category_id,
-    });
-    if (!category) {
-      throw BaseHttpException.generateError(
-        ErrorStatusEnums.NOT_FOUND,
-        `category with id: ${category_id} is not found`,
-      );
-    }
+    const { name } = createVariation;
     const variation = await this.findOneVariation({ name });
     if (variation) {
       throw BaseHttpException.generateError(
@@ -49,7 +58,6 @@ export class VariationService {
       );
     }
     const new_variation = this.variationRepo.create({
-      category,
       name,
     });
     return this.variationRepo.save(new_variation);

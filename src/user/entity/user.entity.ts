@@ -1,3 +1,4 @@
+import { Photo } from 'src/photo/entities/photo.entity';
 import {
   Column,
   CreateDateColumn,
@@ -40,6 +41,9 @@ export class UserEntity {
     nullable: true,
   })
   deleted_at?: Date;
+
+  @OneToMany(() => Photo, (photo) => photo.user)
+  photos: Photo[];
 
   @CreateDateColumn()
   created_at: Date;

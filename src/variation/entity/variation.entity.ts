@@ -1,9 +1,9 @@
-import { CategoryEntity } from 'src/category/entity/category.enity';
+import { CategoryEntity } from 'src/category/entity/category.entity';
 import {
   Column,
   Entity,
-  JoinColumn,
-  ManyToOne,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -14,9 +14,19 @@ export class VariationEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => CategoryEntity, (category) => category.id)
-  @JoinColumn({ name: 'category_id' })
-  category: CategoryEntity;
+  @ManyToMany(() => CategoryEntity)
+  @JoinTable({
+    name: 'variation_category',
+    joinColumn: {
+      name: 'variation_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'category_id',
+      referencedColumnName: 'id',
+    },
+  })
+  category?: CategoryEntity[];
 
   @OneToMany(
     () => VariationOptionEntity,

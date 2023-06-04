@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToInstance } from 'class-transformer';
 import { BaseHttpException } from 'src/shared/base-http-exception';
 import { ErrorStatusEnums } from 'src/types/errors/errors.enum';
 import { hashPassword } from 'src/utils/password-security';
@@ -21,6 +22,17 @@ export class UserService {
 
   async findOne(options: object): Promise<any> {
     return this.userRepo.findOne({ where: options });
+  }
+
+  async getMe(email: string): Promise<any> {
+    const user = await this.findOne({ email });
+    if (!user) {
+      throw BaseHttpException.generateError(
+        ErrorStatusEnums.NOT_FOUND,
+        'User not found',
+      );
+    }
+    // return plainToInstance();
   }
 
   async findOneUserAddress(options: object) {

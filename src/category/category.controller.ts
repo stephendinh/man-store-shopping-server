@@ -12,7 +12,7 @@ export class CategoryController {
   }
 
   @Post()
-  async createCategory(@Body() createCategory: CreateCategoryDto) {
+  async createCategory(@Body() createCategory: any) {
     return this.categoryService.createCategory(createCategory);
   }
 

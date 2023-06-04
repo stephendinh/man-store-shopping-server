@@ -11,7 +11,6 @@ import { MailerService } from 'src/mailer/mailer.service';
 import { TokenExpiredError } from 'jsonwebtoken';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { StatusResponse } from './interfaces/status-response.interface';
-import * as bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
 import { UserDto } from 'src/user/dto/user.dto';
 
@@ -39,7 +38,7 @@ export class AuthService {
     if (!isPasswordEqual) {
       throw BaseHttpException.generateError(
         ErrorStatusEnums.BAD_REQUEST,
-        `Invalid email or password 111!`,
+        `Invalid email or password!`,
       );
     }
     // generate and sign token
@@ -84,7 +83,7 @@ export class AuthService {
     await this.mailerService.sendEmail(
       email,
       'reset password',
-      `${process.env.CLIENT_URL}/change-password/${token}`,
+      `your token gonna be expired in 15 minutes ${process.env.CLIENT_URL}/auth/reset-password?token=${token}`,
     );
     return {
       success: true,
@@ -129,6 +128,7 @@ export class AuthService {
     const accessToken = await this._generateRefreshToken(data);
     return accessToken;
   }
+
   private async _generateToken(
     generateToken: IGenerateTokenProps,
     exp?: any,

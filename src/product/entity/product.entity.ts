@@ -1,10 +1,12 @@
 import { SubCategory } from 'src/category/entity/sub-category.entity';
+import { ProductItemEntity } from 'src/product-item/entities/product-item.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -32,4 +34,7 @@ export class ProductEntity {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @Column()
+  test: string;
 }

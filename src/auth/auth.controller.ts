@@ -30,7 +30,10 @@ export class AuthController {
     @Body() forgotPassword: ForgotPasswordDto,
   ): Promise<any> {
     const { email } = forgotPassword;
-    return this.authService.forgotPassword(email);
+    await this.authService.forgotPassword(email);
+    return {
+      message: `The link was sent to your email: ${email}`,
+    };
   }
 
   @Post('reset-password')

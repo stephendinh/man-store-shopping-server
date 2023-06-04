@@ -5,7 +5,7 @@ export class BaseHttpException extends HttpException {
   constructor(message: string, statusCode: HttpStatus) {
     super(message, statusCode);
   }
-  static generateError(errorType: string, message?: string): HttpException {
+  static generateError(errorType?: string, message?: string): HttpException {
     let errorMessage: string;
     let statusCode: HttpStatus;
     switch (errorType) {
