@@ -21,7 +21,7 @@ export class OrderService {
   async create(createOrderDto: CreateOrderDto) {
     const { payment_method, total_price, shipping_address, listItem } =
       createOrderDto;
-    const convertListItemToNumber = listItem.map((item) => item.id);
+    const convertListItemToNumber = listItem.map((item) => item.product_id);
     const listItemExist = await this.productItemService.findListId(
       convertListItemToNumber,
     );
@@ -31,17 +31,35 @@ export class OrderService {
         `Your list item id is not correct`,
       );
     }
+    // const orderCreated = this.orderRepo.create({
+    //   shipping_address,
+    //   total_price: this.sumPriceProduct(listItem),
+    //   payment_method,
+    //   orderProduct: listItemExist.map((item1) => {
+    //     return {
+    //       item: item1,
+    //       quantity: 1,
+    //       price: 2,
+    //     };
+    //   }),
+    // })
+    const match2Arrays = listItem.map((x) => {
+      const item = listItemExist.find((item) => item.id === x.product_id);
+      if (item) {
+        return {
+          item,
+          ...x,
+        };
+      }
+    });
+
+    const orderItem = this.orderItemDto.create(match2Arrays);
+    await this.orderItemDto.save(orderItem);
     const orderCreated = this.orderRepo.create({
       shipping_address,
-      total_price: this.sumPriceProduct(listItem),
+      total_price,
       payment_method,
-      orderProduct: listItemExist.map((item1) => {
-        return {
-          item: item1,
-          quantity: 1,
-          price: 2,
-        };
-      }),
+      orderProduct: orderItem,
     });
     return this.orderRepo.save(orderCreated);
   }
@@ -52,6 +70,9 @@ export class OrderService {
 
   findOne(object: object) {
     return this.orderRepo.findOne({ where: object });
+  }
+  findOneOrderItem(object: object) {
+    return this.orderItemDto.findOne({ where: object });
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {

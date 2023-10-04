@@ -3,7 +3,7 @@ import { IsEnum, IsNotEmpty, Min, ValidateNested } from 'class-validator';
 import { PaymentMethod } from '../types/payment-method.enums';
 export class OrderItemDto {
   @IsNotEmpty()
-  id: number;
+  product_id: number;
 
   @IsNotEmpty()
   @Min(1)

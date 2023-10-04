@@ -34,6 +34,6 @@ export class ProductItemEntity {
   @Column({ nullable: true })
   deleted_at: Date;
 
-  @OneToMany(() => OderProductEntity, (orderProduct) => orderProduct.item)
-  orderProduct: OderProductEntity[];
+  // @OneToMany(() => OderProductEntity, (orderProduct) => orderProduct.item)
+  // orderProduct: OderProductEntity[];
 }

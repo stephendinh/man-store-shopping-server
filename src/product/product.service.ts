@@ -55,6 +55,13 @@ export class ProductService {
     return this.productRepo.save(newProduct);
   }
 
+  async uploadImage(file: Express.Multer.File) {
+    const image = await this.cloudinaryService.uploadFile(file).catch(() => {
+      throw new BadRequestException('Invalid file type.');
+    });
+    return image;
+  }
+
   async updateProduct(
     id: number,
     updateProductDto: UpdateProductDto,

@@ -1,8 +1,8 @@
-import { Photo } from 'src/photo/entities/photo.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -10,6 +10,7 @@ import {
 import { UserAddressEntity } from './user-address.entity';
 
 @Entity('user')
+@Index(['email'])
 export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -41,9 +42,6 @@ export class UserEntity {
     nullable: true,
   })
   deleted_at?: Date;
-
-  @OneToMany(() => Photo, (photo) => photo.user)
-  photos: Photo[];
 
   @CreateDateColumn()
   created_at: Date;

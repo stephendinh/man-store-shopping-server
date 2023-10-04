@@ -7,17 +7,20 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { OrderEntity } from './order.entity';
 
 @Entity('order-product')
 export class OderProductEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => ProductItemEntity)
-  @JoinColumn({ name: 'productItem_id' })
+  @ManyToOne(() => ProductItemEntity, (productItem) => productItem.id, {
+    eager: true,
+  })
+  @JoinColumn({ name: 'product_id' })
   item: ProductItemEntity;
 
   @ManyToOne(() => OrderEntity)

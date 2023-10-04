@@ -47,6 +47,8 @@ export class OrderEntity {
   })
   order_status: string;
 
-  @OneToMany(() => OderProductEntity, (orderProduct) => orderProduct.item)
+  @OneToMany(() => OderProductEntity, (orderProduct) => orderProduct.order, {
+    eager: true,
+  })
   orderProduct: OderProductEntity[];
 }

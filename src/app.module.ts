@@ -14,7 +14,8 @@ import { MailerModule } from './mailer/mailer.module';
 import { SocketModule } from './socket/socket.module';
 import { ProductItemModule } from './product-item/product-item.module';
 import { OrderModule } from './order/order.module';
-import { PhotoModule } from './photo/photo.module';
+import { RedisModule } from './redis/redis.module';
+import { ConversationModule } from './conversation/conversation.module';
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { PhotoModule } from './photo/photo.module';
     SocketModule,
     ProductItemModule,
     OrderModule,
-    PhotoModule,
+    RedisModule,
+    ConversationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
